@@ -2,10 +2,14 @@ package program;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 import classes.Column;
 import classes.Database;
+import classes.DatabaseManager;
 import classes.Table;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 public class Program {
 	public Program() {}
@@ -20,13 +24,24 @@ public class Program {
 		String msg = "done";
 		if (wordlist.get(0).equals("select")) {
 			System.out.println("you're selecting...");
-		} else if (wordlist.get(0).equals("createdb")) {
+		} 
+		else if (wordlist.get(0).equals("createdb")) {
+			DatabaseManager manager = new DatabaseManager();
 			Database db = new Database(wordlist.get(1));
-			System.out.println("you're creating a ..." + db.getName() + " database.\n");
-		} else if (wordlist.get(0).equals("addtable")) {
+			manager.createDatabase(wordlist.get(1));
+			
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.writeValue(new File("mydb.json"), manager);	
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+		} 
+		else if (wordlist.get(0).equals("addtable")) {
 			Table table = new Table(wordlist.get(2));
 			System.out.println("you're creating a table called ... " + table.getName());
-		} else if (wordlist.get(0).equals("addcols")) {
+		} 
+		else if (wordlist.get(0).equals("addcols")) {
 			Column column = new Column(wordlist.get(3));
 			System.out.println("you're adding a column called .... " + column.getName());
 		}
