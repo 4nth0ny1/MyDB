@@ -1,10 +1,15 @@
 package classes;
 
 public class Table {
+	
+	private String name;
 
-	public Object getName() {
-		// TODO Auto-generated method stub
-		return null;
+	public Table(String name) {
+		this.name = name;
 	}
+
+    public String getName() {
+        return name;
+    }
 
 }

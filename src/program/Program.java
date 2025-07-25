@@ -3,7 +3,9 @@ package program;
 import java.util.ArrayList;
 import java.util.List;
 
+import classes.Column;
 import classes.Database;
+import classes.Table;
 
 public class Program {
 	public Program() {}
@@ -21,13 +23,12 @@ public class Program {
 		} else if (wordlist.get(0).equals("createdb")) {
 			Database db = new Database(wordlist.get(1));
 			System.out.println("you're creating a ..." + db.getName() + " database.\n");
-			
-			
-			/* TODO
-			 * SO NOW THAT THE BASIC STRUCTURE IS IN PLACE
-			 * A DATABASE INSTANCE IS BEING CREATED 
-			 * I NEED TO PERSIST THE DATA SOMEWHERE
-			 * */
+		} else if (wordlist.get(0).equals("addtable")) {
+			Table table = new Table(wordlist.get(2));
+			System.out.println("you're creating a table called ... " + table.getName());
+		} else if (wordlist.get(0).equals("addcols")) {
+			Column column = new Column(wordlist.get(3));
+			System.out.println("you're adding a column called .... " + column.getName());
 		}
 		return msg;
 	}
