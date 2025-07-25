@@ -18,7 +18,21 @@ public class Program {
 		System.out.println("Welcome to my DB again...\n");
 	}
 	
+	public static File findFile(File dir, String targetName) {
+	    File[] files = dir.listFiles();
+	    if (files == null) return null;
 
+	    for (File file : files) {
+	        if (file.isDirectory()) {
+	            File found = findFile(file, targetName); // recursive call
+	            if (found != null) return found;
+	        } else if (file.getName().equals(targetName)) {
+	            return file;
+	        }
+	    }
+
+	    return null;
+	}
 	
 	public String parseCommand(List<String> wordlist) {
 		String msg = "done";
@@ -32,11 +46,40 @@ public class Program {
 			
 			try {
 				ObjectMapper mapper = new ObjectMapper();
-				mapper.writeValue(new File("mydb.json"), manager);	
+				mapper.writeValue(new File(db.getName() + ".json"), manager);	
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
 		} 
+		else if (wordlist.get(0).equals("deletedb")) {
+		    try {
+		        File result = findFile(new File("."), wordlist.get(1) + ".json");
+
+		        if (result == null) {
+		            System.out.println("File not found: " + wordlist.get(1) + ".json");
+		            return msg;
+		        }
+
+		        if (!result.exists()) {
+		            System.out.println("File does not exist: " + result.getAbsolutePath());
+		            return msg;
+		        }
+
+		        if (result.delete()) {
+		            System.out.println("Deleted: " + result.getAbsolutePath());
+		        } else {
+		            System.out.println("Failed to delete: " + result.getAbsolutePath());
+		        }
+
+		    } catch (SecurityException se) {
+		        System.out.println("Permission denied: " + se.getMessage());
+		    } catch (Exception e) {
+		        System.out.println("Something went wrong: " + e.getMessage());
+		    }
+		}
+
+	
+		
 		else if (wordlist.get(0).equals("addtable")) {
 			Table table = new Table(wordlist.get(2));
 			System.out.println("you're creating a table called ... " + table.getName());
