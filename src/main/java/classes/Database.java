@@ -6,6 +6,10 @@ import java.util.List;
 public class Database {
     private String name;
     private List<Table> tables = new ArrayList<>();
+    
+    public Database() {
+        // default constructor for Jackson
+    }
 
     public Database(String name) {
         this.name = name;

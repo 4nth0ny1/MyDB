@@ -42,7 +42,7 @@ public class Program {
 		else if (wordlist.get(0).equals("createdb")) {
 			DatabaseManager manager = new DatabaseManager();
 			Database db = new Database(wordlist.get(1));
-			manager.createDatabase(wordlist.get(1));
+			manager.addDatabase(db);
 			
 			try {
 				ObjectMapper mapper = new ObjectMapper();
@@ -53,7 +53,10 @@ public class Program {
 		} 
 		else if (wordlist.get(0).equals("deletedb")) {
 		    try {
-		        File result = findFile(new File("."), wordlist.get(1) + ".json");
+		        File result = findFile(new File("."), wordlist.get(1) + ".json"); 
+		        // TODO: add a path to the file, so that the user can add a different directory
+		        // something like createdb fruits .
+		        // or createdb fruits ../databases, if no directory called databases exists then create it. 
 
 		        if (result == null) {
 		            System.out.println("File not found: " + wordlist.get(1) + ".json");
@@ -81,9 +84,37 @@ public class Program {
 	
 		
 		else if (wordlist.get(0).equals("addtable")) {
-			Table table = new Table(wordlist.get(2));
-			System.out.println("you're creating a table called ... " + table.getName());
-		} 
+		    File result = findFile(new File("."), wordlist.get(1) + ".json");
+		    
+		    if (result != null) {
+		        try {
+		            // Load the database manager from file
+		            ObjectMapper mapper = new ObjectMapper();
+		            DatabaseManager dbm = mapper.readValue(result, DatabaseManager.class);
+
+		            // Find the correct database
+		            Database res = dbm.getDatabaseByName(wordlist.get(1));
+		            if (res != null) {
+		                Table table = new Table(wordlist.get(2));
+		                res.addTable(table);
+		                System.out.println("Added table: " + table.getName() + " to database: " + res.getName());
+
+		                // Save the updated manager back
+		                mapper.writeValue(result, dbm);
+		            } else {
+		                System.out.println("Database found in file, but no matching name inside: " + wordlist.get(1));
+		            }
+
+		        } catch (Exception e) {
+		            System.out.println("Error loading or modifying database: " + e.getMessage());
+		            e.printStackTrace();
+		        }
+
+		    } else {
+		        System.out.println("Database file not found: " + wordlist.get(1) + ".json");
+		    }
+		}
+
 		else if (wordlist.get(0).equals("addcols")) {
 			Column column = new Column(wordlist.get(3));
 			System.out.println("you're adding a column called .... " + column.getName());

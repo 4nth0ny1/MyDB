@@ -1,37 +1,49 @@
 package classes;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class DatabaseManager {
-    private List<Database> databases = new ArrayList<>();
+    // Map of database name to Database instance
+    private Map<String, Database> allDatabases = new HashMap<>();
 
-    public void createDatabase(String name) {
-        databases.add(new Database(name));
+    // Required no-arg constructor for Jackson
+    public DatabaseManager() {}
+
+    // Add a new database
+    public void addDatabase(Database db) {
+        allDatabases.put(db.getName(), db);
     }
 
-    public void deleteDatabase(String name) {
-        databases.removeIf(db -> db.getName().equals(name));
-    }
-
+    // Get a database by name
     public Database getDatabaseByName(String name) {
-        for (Database db : databases) {
-            if (db.getName().equals(name)) {
-                return db;
-            }
-        }
-        return null;
+        return allDatabases.get(name);
     }
 
-    public List<String> getAllDatabaseNames() {
-        List<String> names = new ArrayList<>();
-        for (Database db : databases) {
-            names.add(db.getName());
-        }
-        return names;
+    // Remove a database by name
+    public void removeDatabase(String name) {
+        allDatabases.remove(name);
     }
 
-    public List<Database> getAllDatabases() {
-        return databases;
+    // Return all databases (used internally or for display)
+    public List<Database> getAllDatabaseList() {
+        return new ArrayList<>(allDatabases.values());
+    }
+
+    // Return the names of all databases
+    public List<String> listDatabaseNames() {
+        return new ArrayList<>(allDatabases.keySet());
+    }
+
+    // Jackson uses these getters and setters for JSON serialization
+
+    public Map<String, Database> getAllDatabases() {
+        return allDatabases;
+    }
+
+    public void setAllDatabases(Map<String, Database> allDatabases) {
+        this.allDatabases = allDatabases;
     }
 }
